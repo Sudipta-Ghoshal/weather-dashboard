@@ -2,6 +2,7 @@ import { useContext } from "react";
 import cloudIcon from "../../assets/cloud.svg";
 import pinIcon from "../../assets/pin.svg";
 import WeatherContext from "../../context";
+import dateFormatter from "../../utils/dateFormat-utils";
 
 export default function WeatherHeading() {
   const { weather } = useContext(WeatherContext);
@@ -19,7 +20,10 @@ export default function WeatherHeading() {
           </div>
         </div>
       </div>
-      <p className="text-sm lg:text-lg">06:09 - Sunday, 9 Dec ‘23</p>
+      <p className="text-sm lg:text-lg">
+        {dateFormatter(weather.time, "time", false)} -{" "}
+        {dateFormatter(weather.time, "date", false)}
+      </p>
     </div>
   );
 }
