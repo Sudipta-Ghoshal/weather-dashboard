@@ -12,7 +12,7 @@ export default function WeatherCondition() {
   return (
     <div>
       <p className="text-sm lg:text-lg font-bold uppercase mb-8">
-        {weather.climate}
+        The Climate is <u>{weather.climate}</u>
       </p>
       <ul className="space-y-6 lg:space-y-6">
         <li className="text-sm lg:text-lg flex items-center justify-between space-x-4">
@@ -39,7 +39,7 @@ export default function WeatherCondition() {
         <li className="text-sm lg:text-lg flex items-center justify-between space-x-4">
           <span>Cloudy</span>
           <div className="inline-flex space-x-4">
-            <p>{weather.cloudiness}%</p>
+            <p>{weather.cloudPercentage}%</p>
             <img src={cloudIcon} alt="cloudy" />
           </div>
         </li>
