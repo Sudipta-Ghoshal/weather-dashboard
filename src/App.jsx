@@ -1,20 +1,20 @@
-import Header from "./components/header/Header";
-import WeatherBoard from "./components/weather/WeatherBoard";
-import { WeatherProvider } from "./provider";
+import Page from "./components/page";
+import {
+  WeatherProvider,
+  FavoriteProvider,
+  LocationProvider,
+} from "./provider";
 
 function App() {
   return (
     <>
-      <WeatherProvider>
-        <div className="h-screen grid place-items-center">
-          <Header />
-          <main>
-            <section>
-              <WeatherBoard />
-            </section>
-          </main>
-        </div>
-      </WeatherProvider>
+      <LocationProvider>
+        <FavoriteProvider>
+          <WeatherProvider>
+            <Page />
+          </WeatherProvider>
+        </FavoriteProvider>
+      </LocationProvider>
     </>
   );
 }
