@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import pinIcon from "../../assets/pin.svg";
-import WeatherContext from "../../context";
+import { WeatherContext } from "../../context";
 import dateFormatter from "../../utils/dateFormat-utils";
 
 import cloudIcon from "../../assets/icons/cloud.svg";
