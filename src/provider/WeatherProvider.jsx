@@ -1,4 +1,4 @@
-import WeatherContext from "../context";
+import { WeatherContext } from "../context";
 import { useWeather } from "../hooks";
 
 export default function WeatherProvider({ children }) {
