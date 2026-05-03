@@ -1,36 +1,42 @@
-import { useState, useEffect, useEffectEvent } from 'react';
+import { useEffect, useEffectEvent, useState } from 'react';
+import { useContext } from 'react';
+import { LocationContext } from '../context';
 
+const initialWeather = {
+    location: '',
+    climate: '',
+    temperature: '',
+    maxTemperature: '',
+    minTemperature: '',
+    humidity: '',
+    cloudPercentage: '',
+    windSpeed: '',
+    time: '',
+    longitude: '',
+    latitude: ''
+};
 
 
 const useWeather = () => {
-    const [weather, setWeather] = useState({
-        location: '',
-        climate: '',
-        temperature: '',
-        maxTemperature: '',
-        minTemperature: '',
-        humidity: '',
-        cloudPercentage: '',
-        windSpeed: '',
-        time: '',
-        longitude: '',
-        latitude: ''
-    });
+    const [weather, setWeather] = useState(initialWeather);
 
     const [loading, setLoading] = useState({
-        isLoading: false,
-        message: ''
+        isLoading: true,
+        message: 'Finding location...'
     });
 
     const [error, setError] = useState(null);
+    const { selectedLocation } = useContext(LocationContext);
 
-    const fetchWeatherData = async (latitude, longitude) => {
+
+    const fetchWeatherData = useEffectEvent(async (latitude, longitude) => {
         try {
             setLoading({
-                ...loading,
                 isLoading: true,
                 message: 'Fetching weather data...'
             })
+
+            setError(null);
 
             const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${import.meta.env.VITE_WEATHER_API_KEY}&units=metric`);
 
@@ -41,7 +47,6 @@ const useWeather = () => {
             const data = await response.json();
 
             const updatedWeather = {
-                ...weather,
                 location: data.name,
                 climate: data.weather[0].main,
                 temperature: data.main.temp,
@@ -60,26 +65,34 @@ const useWeather = () => {
             setError(err.message);
         } finally {
             setLoading({
-                ...loading,
                 isLoading: false,
                 message: ''
             })
         }
-    };
+    });
 
-    const handleRefresh = useEffectEvent((latitude, longitude) => {
-        fetchWeatherData(latitude, longitude)
+    const handleLocationError = useEffectEvent((locationError) => {
+        setError(locationError.message);
+        setLoading({
+            isLoading: false,
+            message: ''
+        })
     });
 
     useEffect(() => {
-        setLoading({
-            isLoading: true,
-            message: 'Finding location...'
-        })
-        navigator.geolocation.getCurrentPosition((position) => {
-            handleRefresh(position.coords.latitude, position.coords.longitude)
-        })
-    }, []);
+        if (selectedLocation.latitude && selectedLocation.longitude) {
+            const timeoutId = setTimeout(() => {
+                fetchWeatherData(selectedLocation.latitude, selectedLocation.longitude);
+            }, 0);
+
+            return () => clearTimeout(timeoutId);
+        } else {
+            navigator.geolocation.getCurrentPosition((position) => {
+                fetchWeatherData(position.coords.latitude, position.coords.longitude)
+            }, handleLocationError, { enableHighAccuracy: true });
+        }
+
+    }, [selectedLocation.latitude, selectedLocation.longitude]);
 
     return { weather, loading, error };
 }
