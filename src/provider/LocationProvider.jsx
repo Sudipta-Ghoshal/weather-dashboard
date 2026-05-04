@@ -2,6 +2,7 @@ import { LocationContext } from "../context";
 import { useState } from "react";
 
 export default function LocationProvider({ children }) {
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedLocation, setSelectedLocation] = useState({
     id: crypto.randomUUID(),
     location: "",
@@ -10,7 +11,9 @@ export default function LocationProvider({ children }) {
   });
 
   return (
-    <LocationContext.Provider value={{ selectedLocation, setSelectedLocation }}>
+    <LocationContext.Provider
+      value={{ selectedLocation, setSelectedLocation, searchTerm, setSearchTerm }}
+    >
       {children}
     </LocationContext.Provider>
   );
